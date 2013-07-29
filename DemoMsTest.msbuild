@@ -62,7 +62,7 @@
     <Message Text="CodeCoverage" />
     <MakeDir Directories="$(OpenCoverReportPath)"/>
 	<!-- Asegure que este creada la variable de entorno NUNIT apuntando a los ejecutables de nunit-->
-	<Exec Command="&quot;$(OpenCoverPath)\OpenCover.Console.exe&quot; -register:user -target:&quot;$(MsTestPath)&quot; -targetargs:/testcontainer:&quot;@(TestAssemblies)&quot; -output:&quot;$(OpenCoverOuputFile)&quot;" />
+	<Exec Command="&quot;$(OpenCoverPath)\OpenCover.Console.exe&quot; -register:user -target:&quot;$(MsTestPath)&quot; -targetargs:/testcontainer:&quot;@(TestAssemblies)&quot; -filter:&quot;+[DemoMsTest.Logic*]* -[DemoMsTest.Tests]*&quot; -output:&quot;$(OpenCoverOuputFile)&quot;" />
 	<Message Text="CodeCoverage finished" />		
   </Target>
   
@@ -71,15 +71,10 @@
 	<Exec Command="&quot;ReportGenerator.exe&quot; &quot;$(OpenCoverOuputFile)&quot; &quot;$(OpenCoverReportPath)&quot;" />
   </Target>
   
-  <!-- Genera reporte de nunit-->
-  <Target Name="NunitReport">
-	<Exec Command="&quot;NUnit2Report.Console.exe&quot; --fileset=&quot;$(ReportsPath)\TestResult.xml&quot; --todir=&quot;$(ReportsPath)\NunitReport&quot;" />
-  </Target>
-	 
-	<!-- The default build task that pulls the other tasks together -->
+  <!-- The default build task that pulls the other tasks together -->
 	<Target Name="Build" DependsOnTargets="Compile">
 	</Target>
 	
-	<Target Name="CI" DependsOnTargets="CodeCoverage;CoberturaReport;NunitReport;CodeDuplicated">
+	<Target Name="CI" DependsOnTargets="Compile;CodeCoverage;CoberturaReport">
 	</Target>
 </Project>
